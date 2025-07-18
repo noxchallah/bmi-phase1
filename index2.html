@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>BMI Calculator - Phase 1</title>
+    <title>Calculateur IMC - Phase 2</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -15,7 +15,7 @@
       }
 
       .bmi-container {
-        position: relative; /* for positioning the link */
+        position: relative; /* Needed for absolute positioning of the link */
         background: white;
         padding: 2rem;
         border-radius: 1rem;
@@ -23,7 +23,7 @@
         display: grid;
         gap: 1rem;
         width: 300px;
-        padding-bottom: 3rem; /* space for the link */
+        padding-bottom: 3rem; /* Space for the link */
       }
 
       input,
@@ -59,49 +59,68 @@
   <body>
     <div id="root"></div>
 
-    <!-- React + ReactDOM -->
+    <!-- CDN REACT + BABEL -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-
-    <!-- Babel -->
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
     <!-- React App -->
     <script type="text/babel">
-      const InputGroup = ({ label, value }) => (
+      const { useState } = React;
+
+      const InputGroup = ({ label, value, onChange }) => (
         <div>
           <label>{label}</label>
-          <input type="number" value={value} readOnly />
+          <input type="number" value={value} onChange={onChange} step="any" />
         </div>
       );
 
-      const ResultDisplay = ({ value }) => (
-        <div className="result">{value}</div>
-      );
+      const ResultDisplay = ({ value }) => <div className="result">{value}</div>;
 
       const App = () => {
-        const dummyWeight = 60;
-        const dummyHeight = 1.72;
-        const dummyResult = "BMI: 20.3";
+        const [weight, setWeight] = useState("");
+        const [height, setHeight] = useState("");
+        const [bmi, setBmi] = useState("");
+
+        const handleCalculate = () => {
+          const w = parseFloat(weight);
+          const h = parseFloat(height);
+
+          if (w > 0 && h > 0) {
+            const result = (w / (h * h)).toFixed(2);
+            setBmi(result);
+          } else {
+            setBmi("Entrée invalide");
+          }
+        };
 
         return (
           <div className="bmi-container">
-            <h2>BMI Calculator</h2>
+            <h2>Calculateur d’IMC</h2>
 
-            <InputGroup label="Weight (kg)" value={dummyWeight} />
-            <InputGroup label="Height (m)" value={dummyHeight} />
+            <InputGroup
+              label="Poids (kg)"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+            />
 
-            <button>Calculate BMI</button>
+            <InputGroup
+              label="Taille (m)"
+              value={height}
+              onChange={(e) => setHeight(e.target.value)}
+            />
 
-            <ResultDisplay value={dummyResult} />
+            <button onClick={handleCalculate}>Calculer l’IMC</button>
+
+            <ResultDisplay value={bmi ? `IMC : ${bmi}` : "Résultat ici"} />
 
             <a
-              href="index2.html"
+              href="index.html"
               target="_blank"
               rel="noopener noreferrer"
               className="bottom-link"
             >
-              Phase 2
+              Phase 1
             </a>
           </div>
         );
